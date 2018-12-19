@@ -19,44 +19,27 @@
             <div id="page-inner">
                 <div class="row">
                     <div class="col-md-12">
-                        <h1 class="page-head-line">Users </h1>
+                        <h1 class="page-head-line">Roles </h1>
 						 <div class="panel-body">
 							<span id="response">
                                  
                             </span>
                             <button class="btn btn-primary btn-lg pull-right" id="addbutton" data-toggle="modal" data-target="#addModal">
-                                <i class="fa fa-plus"></i> Add User
+                                <i class="fa fa-plus"></i> Add Role
                             </button>
                             <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <form role="form" method="post" id="insert_form">
-										<input type="hidden" name="user_id" id="user_id" />
+										<input type="hidden" name="role_id" id="role_id" />
 										<div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                            <h4 class="modal-title" id="myModalLabel"><i class="fa fa-plus"></i> Add User</h4>
+                                            <h4 class="modal-title" id="myModalLabel"><i class="fa fa-plus"></i> Add Role</h4>
                                         </div>
                                         <div class="modal-body">
 												<div class="form-group required">
-													<label class="control-label">Name</label>
-													<input class="form-control" type="text" name="name" id="name" maxlength="150" placeholder="Enter Name" required>
-												</div>
-												<div class="form-group required">
-													<label class="control-label">Password</label>
-													<input class="form-control number" type="text" name="password" maxlength="10" id="password" placeholder="Enter Password" required>
-												</div>
-												<div class="form-group required">
-													<label class="control-label">Role</label>
-													<select class="form-control" name="role_id" id="role_id" required>
-														<option value="">--Select Role--</option>
-														<?php
-												$s = mysqli_query($db->connection, "select * from roles where isactive = 1");
-												while ($row = mysqli_fetch_array($s)) {
-														
-												?>
-													<option value="<?php echo $row['role_id']; ?>"><?php echo $row['role_name']; ?></option>
-												<?php } ?>	
-													</select>
+													<label class="control-label">Role Name</label>
+													<input class="form-control" type="text" name="role_name" id="role_name" maxlength="50" placeholder="Enter Role Name" required>
 												</div>
 										</div>
                                         <div class="modal-footer">
@@ -80,26 +63,22 @@
                             <thead>
                                 <tr>
                                     <th>S. No.</th>
-                                    <th>Name</th>
-                                    <th>Password</th>
                                     <th>Role</th>
-                                     <th>Action(s)</th>
+                                    <th>Action(s)</th>
                                 </tr>
                             </thead>
                             <tbody id="data">
 								<?php
 								$i=0;
-								$s = mysqli_query($db->connection, "select * from user where isactive = 1");
+								$s = mysqli_query($db->connection, "select * from roles where isactive = 1");
 								while ($row = mysqli_fetch_array($s)) {
 										$i++; 
 								?>
                                 <tr>
                                     <td><?=$i;?></td>
-                                    <td><?=$row['name'];?></td>
-                                    <td><?=$row['password'];?></td>
-                                    <td><?=$db->get_title('roles','role_name','role_id',$row['role_id']);?></td>
-                                    <td><a href="javascript:void(0);" data-toggle="modal" class="edit_data" data-target="#addModal" id="<?=$row['user_id'];?>"><i class="fa fa-pencil-square-o"></i></a> 
-									&nbsp; <a href="javascript:void(0);" class="del_data" onclick="return confirm('Are you sure you want to delete?')" id="<?=$row['user_id'];?>"><i class="fa fa-trash"></i></a></td>
+                                    <td><?=$row['role_name'];?></td>
+                                    <td><a href="javascript:void(0);" data-toggle="modal" class="edit_data" data-target="#addModal" id="<?=$row['role_id'];?>"><i class="fa fa-pencil-square-o"></i></a> 
+									&nbsp; <a href="javascript:void(0);" class="del_data" onclick="return confirm('Are you sure you want to delete?')" id="<?=$row['role_id'];?>"><i class="fa fa-trash"></i></a></td>
                                 </tr>
 								<?php } ?>
                             </tbody>
@@ -128,13 +107,13 @@
 	$(document).ready(function() {
 	$('#addbutton').click(function(){  
            $('#insert').html("<i class='fa fa-save'></i> Save");
-		   $('#myModalLabel').html("<i class='fa fa-save'></i> Add User");  
+		   $('#myModalLabel').html("<i class='fa fa-save'></i> Add Role");  
            $('#insert_form')[0].reset();  
     });
 	$('#insert_form').on("submit", function(event){  
            event.preventDefault();  
             $.ajax({  
-                     url:"insert_user.php",  
+                     url:"insert_role.php",  
                      method:"POST",  
                      data:$('#insert_form').serialize(),  
                      beforeSend:function(){  
@@ -148,7 +127,7 @@
 						  $("#response").html('<div class="alert alert-success">Data has been saved successfully.</div>');
                           $('#insert_form')[0].reset(); 
                           $('#addModal').modal('hide');
-						  $("#data").load('fetch_users.php');
+						  $("#data").load('fetch_roles.php');
 						  
 						  setTimeout(function() 
 							{	
@@ -158,29 +137,27 @@
                 });  
     });   
 	$(document).on('click', '.edit_data', function(){ 
-           var user_id = $(this).attr("id");  
+           var role_id = $(this).attr("id");  
            $.ajax({  
-                url:"fetch_users.php",  
+                url:"fetch_roles.php",  
                 method:"POST",  
-                data:{user_id:user_id},  
+                data:{role_id:role_id},  
                 dataType:"json",  
                 success:function(data){  
-                     $('#user_id').val(data.user_id);  
-                     $('#name').val(data.name);  
-                     $('#password').val(data.password); 
-                     $('#role_id').val(data.role_id); 
+                     $('#role_id').val(data.role_id);  
+                     $('#role_name').val(data.role_name);  
                      $('#insert').html("<i class='fa fa-pencil-square-o'></i> Update");  
-                     $('#myModalLabel').html("<i class='fa fa-pencil-square-o'></i> Edit User");  
+                     $('#myModalLabel').html("<i class='fa fa-pencil-square-o'></i> Edit Role");  
                      $('#addModal').modal('show');  
                 }  
             });  
     });
 	$(document).on('click', '.del_data', function(){ 
-		   var user_id = $(this).attr("id");  
+		   var role_id = $(this).attr("id");  
 		   $.ajax({  
                 url:"delete.php",  
                 method:"POST",  
-                data:{id:user_id,cond:3},  
+                data:{id:role_id,cond:4},  
                 dataType:"text",  
                 success:function(data){  
                      $("#response").show();
@@ -188,7 +165,7 @@
 							scrollTop: $("#response").offset().top
 							}, 1000);
 						  $("#response").html('<div class="alert alert-danger">Data has been deleted successfully.</div>');
-						  $("#data").load('fetch_users.php');
+						  $("#data").load('fetch_roles.php');
 						  setTimeout(function() 
 							{	
 								$("#response").hide();

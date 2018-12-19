@@ -46,9 +46,9 @@
 													<select class="form-control" name="cat_id" id="cat_id" required>
 														<option value="">--Select Category--</option>
 														<?php
-												$s = mysqli_query($db->connection, "select * from category_details");
+												$s = mysqli_query($db->connection, "select * from category_details where isactive = 1");
 												while ($row = mysqli_fetch_array($s)) {
-														$co1++;
+														
 												?>
 													<option value="<?php echo $row['cat_id']; ?>"><?php echo $row['category_name']; ?></option>
 												<?php } ?>	
@@ -101,7 +101,7 @@
                                 <tr>
                                     <td><?=$i;?></td>
                                     <td><?=$row['product_name'];?></td>
-                                    <td><?=$row['cat_id'];?></td>
+                                    <td><?=$db->get_title('category_details','category_name','cat_id',$row['cat_id']);?></td>
                                     <td><?=$row['o_price'];?></td>
                                     <td><?=$row['price'];?></td>
                                     <td><a href="javascript:void(0);" data-toggle="modal" class="edit_data" data-target="#addModal" id="<?=$row['product_id'];?>"><i class="fa fa-pencil-square-o"></i></a> 
@@ -155,7 +155,7 @@
                           $('#insert_form')[0].reset(); 
                           $('#addModal').modal('hide');
 						  $("#products_data").load('fetch_products.php');
-						  
+						  console.log($("#products_data").load('fetch_products.php'));	
 						  setTimeout(function() 
 							{	
 								$("#response").hide();
@@ -178,7 +178,8 @@
                      $('#price').val(data.price);  
                      $('#insert').html("<i class='fa fa-pencil-square-o'></i> Update");  
                      $('#myModalLabel').html("<i class='fa fa-pencil-square-o'></i> Edit Product");  
-                     $('#addModal').modal('show');  
+                     $('#addModal').modal('show'); 
+										 
                 }  
             });  
     });

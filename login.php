@@ -3,7 +3,7 @@
 <head>
       <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Responsive Bootstrap Advance Admin Template</title>
+    <title>POS</title>
 
     <!-- BOOTSTRAP STYLES-->
     <link href="assets/css/bootstrap.css" rel="stylesheet" />
@@ -25,30 +25,26 @@
                 <div class="col-md-4 col-md-offset-4 col-sm-6 col-sm-offset-3 col-xs-10 col-xs-offset-1">
                            
                             <div class="panel-body">
-                                <form role="form">
+                                <form role="form" method="post" id="userForm">
                                     <hr />
-                                    <h5>Enter Details to Login</h5>
+                                    <h5>Enter PIN to Login</h5>
                                        <br />
-                                     <div class="form-group input-group">
-                                            <span class="input-group-addon"><i class="fa fa-tag"  ></i></span>
-                                            <input type="text" class="form-control" placeholder="Your Username " />
-                                        </div>
-                                                                              <div class="form-group input-group">
+                                    <div class="form-group input-group">
                                             <span class="input-group-addon"><i class="fa fa-lock"  ></i></span>
-                                            <input type="password" class="form-control"  placeholder="Your Password" />
+                                            <input type="password" name="password" class="form-control" required  placeholder="Enter your PIN" maxlength="10" />
                                         </div>
                                     <div class="form-group">
                                             <label class="checkbox-inline">
                                                 <input type="checkbox" /> Remember me
                                             </label>
-                                            <span class="pull-right">
-                                                   <a href="index.html" >Forget password ? </a> 
+                                            <span class="pull-right" style="display:none;">
+                                                   <a href="index.php" >Forget password ? </a> 
                                             </span>
                                         </div>
                                      
-                                     <a href="index.html" class="btn btn-primary ">Login Now</a>
+                                     <button type="submit" class="btn btn-primary">Login Now</button>
                                     <hr />
-                                    Not register ? <a href="index.html" >click here </a> or go to <a href="index.html">Home</a> 
+                                     <span id="response"></span>
                                     </form>
                             </div>
                            
@@ -57,6 +53,44 @@
                 
         </div>
     </div>
+
+<script src="assets/js/jquery-1.10.2.js"></script>
+
+<script>
+$(document).ready(function (e) {
+$("#userForm").on('submit',(function(e) {
+e.preventDefault();
+$('#response').show();
+$("#loader").show();
+$.ajax({
+url: "login-exec.php", // Url to which the request is send
+type: "POST",             // Type of request to be send, called as method
+data: new FormData(this), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
+contentType: false,       // The content type used when sending data to the server.
+cache: false,             // To unable request pages to be cached
+processData:false,        // To send DOMDocument or non processed data file it is set to false
+success: function(data)   // A function to be called if request succeeds
+{
+$("#loader").hide();
+$("#response").html(data);
+	
+	if(data==0) 
+	{
+		 $("#response").html('<div class="alert alert-danger">Invalid PIN.</div>');
+	}
+	setTimeout(function() 
+	{	
+		$("#response").hide();	
+	}, 3000);
+},
+error: function (jqXHR, status, err) {
+    alert("Error : Connection to server failed");
+}
+});
+
+}));
+});
+</script>	
 
 </body>
 </html>

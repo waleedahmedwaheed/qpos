@@ -21,6 +21,7 @@
     /** INTERNAL: The last result resource of a query().
       */
     var $lastResult;
+    var $title;
 
     /** Connect to a MySQL database to be able to use the methods below.
       */
@@ -29,6 +30,7 @@
       $this->mtStart    = $this->getMicroTime();
       $this->nbQueries  = 0;
       $this->lastResult = NULL;
+      $this->title = NULL;
       $this->connection = FALSE;
       $this->connection = mysqli_connect($server, $user, $pass, $base);
 
@@ -295,5 +297,12 @@
       list($msec, $sec) = explode(' ', microtime());
       return floor($sec / 1000) + $msec;
     }
+	
+	function get_title($table,$column,$where,$text){
+		$s = mysqli_query($this->connection, "select $column title from $table where $where = $text");
+		$row = mysqli_fetch_assoc($s);
+		$this->title = $row['title'];
+		return $this->title;
+	}
   } // class DB
 ?>

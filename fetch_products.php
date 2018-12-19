@@ -1,8 +1,10 @@
 <?php include('db.php'); 
+
 if(isset($_POST["product_id"])) {
 	 $s = mysqli_query($db->connection, "select * from products where product_id = '".$_POST["product_id"]."' and isactive = 1");
+	 $rows = array();
 	 $row = mysqli_fetch_array($s);
-	 echo json_encode($row);  
+	 echo json_encode($row, JSON_PRETTY_PRINT);  
 }
 else
 {
@@ -13,7 +15,7 @@ else
 	echo "<tr>";
 	echo "<td>".$i."</td>";
 	echo "<td>".$row['product_name']."</td>";
-	echo "<td>".$row['cat_id']."</td>";
+	echo "<td>".$db->get_title('category_details','category_name','cat_id',$row['cat_id'])."</td>";
 	echo "<td>".$row['o_price']."</td>";
 	echo "<td>".$row['price']."</td>";
 	?>

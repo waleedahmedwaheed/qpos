@@ -19,44 +19,31 @@
             <div id="page-inner">
                 <div class="row">
                     <div class="col-md-12">
-                        <h1 class="page-head-line">Users </h1>
+                        <h1 class="page-head-line">Permissions </h1>
 						 <div class="panel-body">
 							<span id="response">
                                  
                             </span>
                             <button class="btn btn-primary btn-lg pull-right" id="addbutton" data-toggle="modal" data-target="#addModal">
-                                <i class="fa fa-plus"></i> Add User
+                                <i class="fa fa-plus"></i> Add Permission
                             </button>
                             <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
                                         <form role="form" method="post" id="insert_form">
-										<input type="hidden" name="user_id" id="user_id" />
+										<input type="hidden" name="perm_id" id="perm_id" />
 										<div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                                            <h4 class="modal-title" id="myModalLabel"><i class="fa fa-plus"></i> Add User</h4>
+                                            <h4 class="modal-title" id="myModalLabel"><i class="fa fa-plus"></i> Add Permission</h4>
                                         </div>
                                         <div class="modal-body">
 												<div class="form-group required">
-													<label class="control-label">Name</label>
-													<input class="form-control" type="text" name="name" id="name" maxlength="150" placeholder="Enter Name" required>
-												</div>
+													<label class="control-label">Permission Name</label>
+													<input class="form-control" type="text" name="perm_name" id="perm_name" maxlength="50" placeholder="Enter Permission Name" required>
+												</div>  
 												<div class="form-group required">
-													<label class="control-label">Password</label>
-													<input class="form-control number" type="text" name="password" maxlength="10" id="password" placeholder="Enter Password" required>
-												</div>
-												<div class="form-group required">
-													<label class="control-label">Role</label>
-													<select class="form-control" name="role_id" id="role_id" required>
-														<option value="">--Select Role--</option>
-														<?php
-												$s = mysqli_query($db->connection, "select * from roles where isactive = 1");
-												while ($row = mysqli_fetch_array($s)) {
-														
-												?>
-													<option value="<?php echo $row['role_id']; ?>"><?php echo $row['role_name']; ?></option>
-												<?php } ?>	
-													</select>
+													<label class="control-label">Url</label>
+													<input class="form-control" type="text" name="perm_url" id="perm_url" maxlength="50" placeholder="Enter Permission Url" required>
 												</div>
 										</div>
                                         <div class="modal-footer">
@@ -81,25 +68,23 @@
                                 <tr>
                                     <th>S. No.</th>
                                     <th>Name</th>
-                                    <th>Password</th>
-                                    <th>Role</th>
-                                     <th>Action(s)</th>
+                                    <th>Url</th>
+                                    <th>Action(s)</th>
                                 </tr>
                             </thead>
                             <tbody id="data">
 								<?php
 								$i=0;
-								$s = mysqli_query($db->connection, "select * from user where isactive = 1");
+								$s = mysqli_query($db->connection, "select * from permission where isactive = 1");
 								while ($row = mysqli_fetch_array($s)) {
 										$i++; 
 								?>
                                 <tr>
                                     <td><?=$i;?></td>
-                                    <td><?=$row['name'];?></td>
-                                    <td><?=$row['password'];?></td>
-                                    <td><?=$db->get_title('roles','role_name','role_id',$row['role_id']);?></td>
-                                    <td><a href="javascript:void(0);" data-toggle="modal" class="edit_data" data-target="#addModal" id="<?=$row['user_id'];?>"><i class="fa fa-pencil-square-o"></i></a> 
-									&nbsp; <a href="javascript:void(0);" class="del_data" onclick="return confirm('Are you sure you want to delete?')" id="<?=$row['user_id'];?>"><i class="fa fa-trash"></i></a></td>
+                                    <td><?=$row['perm_name'];?></td>
+                                    <td><?=$row['perm_url'];?></td>
+                                    <td><a href="javascript:void(0);" data-toggle="modal" class="edit_data" data-target="#addModal" id="<?=$row['perm_id'];?>"><i class="fa fa-pencil-square-o"></i></a> 
+									&nbsp; <a href="javascript:void(0);" class="del_data" onclick="return confirm('Are you sure you want to delete?')" id="<?=$row['perm_id'];?>"><i class="fa fa-trash"></i></a></td>
                                 </tr>
 								<?php } ?>
                             </tbody>
@@ -128,13 +113,13 @@
 	$(document).ready(function() {
 	$('#addbutton').click(function(){  
            $('#insert').html("<i class='fa fa-save'></i> Save");
-		   $('#myModalLabel').html("<i class='fa fa-save'></i> Add User");  
+		   $('#myModalLabel').html("<i class='fa fa-save'></i> Add Permission");  
            $('#insert_form')[0].reset();  
     });
 	$('#insert_form').on("submit", function(event){  
            event.preventDefault();  
             $.ajax({  
-                     url:"insert_user.php",  
+                     url:"insert_permission.php",  
                      method:"POST",  
                      data:$('#insert_form').serialize(),  
                      beforeSend:function(){  
@@ -148,7 +133,7 @@
 						  $("#response").html('<div class="alert alert-success">Data has been saved successfully.</div>');
                           $('#insert_form')[0].reset(); 
                           $('#addModal').modal('hide');
-						  $("#data").load('fetch_users.php');
+						  $("#data").load('fetch_permissions.php');
 						  
 						  setTimeout(function() 
 							{	
@@ -158,29 +143,28 @@
                 });  
     });   
 	$(document).on('click', '.edit_data', function(){ 
-           var user_id = $(this).attr("id");  
+           var perm_id = $(this).attr("id");  
            $.ajax({  
-                url:"fetch_users.php",  
+                url:"fetch_permissions.php",  
                 method:"POST",  
-                data:{user_id:user_id},  
+                data:{perm_id:perm_id},  
                 dataType:"json",  
                 success:function(data){  
-                     $('#user_id').val(data.user_id);  
-                     $('#name').val(data.name);  
-                     $('#password').val(data.password); 
-                     $('#role_id').val(data.role_id); 
+                     $('#perm_id').val(data.perm_id);  
+                     $('#perm_name').val(data.perm_name);  
+                     $('#perm_url').val(data.perm_url);  
                      $('#insert').html("<i class='fa fa-pencil-square-o'></i> Update");  
-                     $('#myModalLabel').html("<i class='fa fa-pencil-square-o'></i> Edit User");  
+                     $('#myModalLabel').html("<i class='fa fa-pencil-square-o'></i> Edit Permission");  
                      $('#addModal').modal('show');  
                 }  
             });  
     });
 	$(document).on('click', '.del_data', function(){ 
-		   var user_id = $(this).attr("id");  
+		   var perm_id = $(this).attr("id");  
 		   $.ajax({  
                 url:"delete.php",  
                 method:"POST",  
-                data:{id:user_id,cond:3},  
+                data:{id:perm_id,cond:5},  
                 dataType:"text",  
                 success:function(data){  
                      $("#response").show();
@@ -188,7 +172,7 @@
 							scrollTop: $("#response").offset().top
 							}, 1000);
 						  $("#response").html('<div class="alert alert-danger">Data has been deleted successfully.</div>');
-						  $("#data").load('fetch_users.php');
+						  $("#data").load('fetch_permissions.php');
 						  setTimeout(function() 
 							{	
 								$("#response").hide();
