@@ -304,5 +304,12 @@
 		$this->title = $row['title'];
 		return $this->title;
 	}
+	
+	function getSessionStatus(){
+		session_start();
+		if (!isset($_SESSION['name'])) {
+			header('Location: login.php');
+		}
+	}
   } // class DB
 ?>

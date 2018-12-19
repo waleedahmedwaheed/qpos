@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Dec 19, 2018 at 09:23 AM
+-- Generation Time: Dec 19, 2018 at 10:38 AM
 -- Server version: 5.7.23
 -- PHP Version: 5.6.38
 
@@ -102,6 +102,7 @@ CREATE TABLE IF NOT EXISTS `permission` (
   `isactive` smallint(6) NOT NULL DEFAULT '1',
   `datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `perm_url` varchar(50) NOT NULL,
+  `perm_icon` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`perm_id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 
@@ -109,9 +110,9 @@ CREATE TABLE IF NOT EXISTS `permission` (
 -- Dumping data for table `permission`
 --
 
-INSERT INTO `permission` (`perm_id`, `perm_name`, `isactive`, `datetime`, `perm_url`) VALUES
-(1, 'Dashboard', 1, '2018-12-18 14:39:25', 'index.php'),
-(2, 'Products', 1, '2018-12-18 14:40:30', 'products.php');
+INSERT INTO `permission` (`perm_id`, `perm_name`, `isactive`, `datetime`, `perm_url`, `perm_icon`) VALUES
+(1, 'Dashboard', 1, '2018-12-18 14:39:25', 'index.php', '<i class=\"fa fa-dashboard \"></i>'),
+(2, 'Products', 1, '2018-12-18 14:40:30', 'products.php', '<i class=\"fa fa-square-o\"></i>');
 
 -- --------------------------------------------------------
 
@@ -209,18 +210,19 @@ CREATE TABLE IF NOT EXISTS `user` (
   `datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `role_id` int(11) NOT NULL,
   PRIMARY KEY (`user_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=latin1;
 
 --
 -- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`user_id`, `name`, `password`, `isactive`, `datetime`, `role_id`) VALUES
-(1, 'Waleeds', '123412', 0, '2018-12-14 18:00:11', 0),
+(1, 'Waleeds', '777', 1, '2018-12-14 18:00:11', 0),
 (2, 'Test', '12345', 0, '2018-12-14 18:00:21', 0),
 (3, 'waleed', '12345', 1, '2018-12-14 18:01:21', 3),
 (4, 'waleed', '12345', 0, '2018-12-14 18:01:26', 0),
-(5, 'waleed', '12345', 0, '2018-12-14 18:02:18', 0);
+(5, 'waleed', '12345', 0, '2018-12-14 18:02:18', 0),
+(6, 'waleed', '1234', 1, '2018-12-19 14:42:05', 4);
 
 --
 -- Constraints for dumped tables

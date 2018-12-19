@@ -17,7 +17,7 @@
     <div class="container">
         <div class="row text-center " style="padding-top:100px;">
             <div class="col-md-12">
-                <img src="assets/img/logo-invoice.png" />
+                <h1>Point of Sale</h2>
             </div>
         </div>
          <div class="row ">
@@ -28,13 +28,12 @@
                                 <form role="form" method="post" id="userForm">
                                     <hr />
                                     <h5>Enter PIN to Login</h5>
-                                       <br />
                                     <div class="form-group input-group">
                                             <span class="input-group-addon"><i class="fa fa-lock"  ></i></span>
                                             <input type="password" name="password" class="form-control" required  placeholder="Enter your PIN" maxlength="10" />
                                         </div>
-                                    <div class="form-group">
-                                            <label class="checkbox-inline">
+                                    <div class="form-group" style="display:none;">
+                                            <label class="checkbox-inline" style="display:none;">
                                                 <input type="checkbox" /> Remember me
                                             </label>
                                             <span class="pull-right" style="display:none;">
@@ -74,12 +73,10 @@ success: function(data)   // A function to be called if request succeeds
 $("#loader").hide();
 $("#response").html(data);
 	
-	if(data==0) 
-	{
+	if(data==0){
 		 $("#response").html('<div class="alert alert-danger">Invalid PIN.</div>');
 	}
-	setTimeout(function() 
-	{	
+	setTimeout(function(){	
 		$("#response").hide();	
 	}, 3000);
 },

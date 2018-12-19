@@ -7,6 +7,7 @@ $password		= $_REQUEST["password"];
 	    if(mysqli_num_rows($qry)>0){ 
 			$rows = mysqli_fetch_assoc($qry);
 			$_SESSION['name'] = $rows['name'];
+			$_SESSION['role_id'] = $rows['role_id'];
 			session_write_close();
 			echo "<script type='text/javascript'>window.location='index.php';</script>";
 		}

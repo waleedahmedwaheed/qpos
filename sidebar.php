@@ -22,16 +22,15 @@
         <nav class="navbar-default navbar-side" role="navigation">
             <div class="sidebar-collapse">
                 <ul class="nav" id="main-menu">
-                   
-
+				<?php if($_SESSION['role_id']=='0'){ ?>
                     <li>
                         <a <?php if(basename($_SERVER['PHP_SELF'])=='index.php'){ ?> class="active-menu" <?php } ?> href="index.php"><i class="fa fa-dashboard "></i>Dashboard</a>
                     </li>
                     <li>
-                        <a href="javascript:void(0)" <?php if(basename($_SERVER['PHP_SELF'])=='products.php' || basename($_SERVER['PHP_SELF'])=='categories.php'){ ?> class="active-menu" <?php } ?> ><i class="fa fa-desktop"></i>Products <span class="fa arrow"></span></a>
+                        <a href="javascript:void(0)" <?php if(basename($_SERVER['PHP_SELF'])=='products.php' || basename($_SERVER['PHP_SELF'])=='categories.php'){ ?> class="active-menu" <?php } ?> ><i class="fa fa-desktop"></i>Product Management <span class="fa arrow"></span></a>
                          <ul class="nav nav-second-level">
                             <li>
-                                <a href="products.php"><i class="fa fa-toggle-on"></i>New Poduct</a>
+                                <a href="products.php"><i class="fa fa-square-o"></i>Poducts</a>
                             </li>
                             <li>
                                 <a href="categories.php"><i class="fa fa-list-alt"></i>Category</a>
@@ -58,6 +57,16 @@
                     <li>
                         <a href="javascript:void(0)"><i class="fa fa-users"></i>Suppliers</a>
                     </li>
+				<?php } else {  	
+				
+					$s = mysqli_query($db->connection, "select * from assign_perm_to_roles where isactive = 1 and role_id = '".$_SESSION['role_id']."'");
+					while ($row = mysqli_fetch_array($s)) {  ?>
+						<li>
+                                <a href="<?=$db->get_title('permission','perm_url','perm_id',$row['perm_id']);?>"><?=$db->get_title('permission','perm_icon','perm_id',$row['perm_id']);?><?=$db->get_title('permission','perm_name','perm_id',$row['perm_id']);?></a>
+                        </li>
+				<?php	}
+				  } ?>
+					
                 </ul>
 
             </div>

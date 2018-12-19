@@ -1,4 +1,5 @@
-<?php include('db.php'); ?>
+<?php include('db.php'); 
+$db->getSessionStatus(); ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -140,13 +141,17 @@
                      beforeSend:function(){  
                           $('#insert').html("<i class='fa fa-save'></i> Processing..");  
                      },  
-                     success:function(data){  
+                     success:function(data){ 
 						  $("#response").show();
 						  $('html, body').animate({
 							scrollTop: $("#response").offset().top
 							}, 1000);
+						  if(data==0){
+						  $("#response").html('<div class="alert alert-danger">User with this PIN already exist.</div>');
+							} else {	
 						  $("#response").html('<div class="alert alert-success">Data has been saved successfully.</div>');
-                          $('#insert_form')[0].reset(); 
+							}
+						  $('#insert_form')[0].reset(); 
                           $('#addModal').modal('hide');
 						  $("#data").load('fetch_users.php');
 						  
