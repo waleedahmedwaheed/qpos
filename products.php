@@ -9,7 +9,13 @@ $db->getSessionStatus();
 		.panel-body a{
 			margin-bottom : 15px !important;
 		}
-		 
+		.img-circle{
+			height: 40px !important;
+			width: 50px !important;
+		}
+		td{
+			vertical-align:middle !important;
+		}
 	 </style>
 </head>
 <body>
@@ -32,7 +38,7 @@ $db->getSessionStatus();
                             <div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
                                 <div class="modal-dialog">
                                     <div class="modal-content">
-                                        <form role="form" method="post" id="insert_form">
+                                        <form role="form" method="post" id="insert_form" enctype="multipart/form-data">
 										<input type="hidden" name="product_id" id="product_id" />
 										<div class="modal-header">
                                             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
@@ -64,6 +70,10 @@ $db->getSessionStatus();
 													<label class="control-label">Selling Price</label>
 													<input class="form-control float" type="text" name="price" id="price" placeholder="Enter Selling Price" required>
 												</div>
+												<div class="form-group">
+													<label class="control-label">Image</label>
+													<input class="form-control" type="file" name="file" id="image">
+												</div>
 										</div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -90,6 +100,7 @@ $db->getSessionStatus();
                                     <th>Category</th>
                                     <th>Original Price</th>
                                      <th>Selling Price</th>
+                                     <th>Image</th>
                                      <th>Action(s)</th>
                                 </tr>
                             </thead>
@@ -106,6 +117,7 @@ $db->getSessionStatus();
                                     <td><?=$db->get_title('category_details','category_name','cat_id',$row['cat_id']);?></td>
                                     <td><?=$row['o_price'];?></td>
                                     <td><?=$row['price'];?></td>
+                                    <td><?php if($row['image']<>''){ ?> <img src="uploads/<?=$row['image'];?>" alt="POS" class="img-circle" /> <?php } else { ?> <img src="http://via.placeholder.com/70x70" alt="POS" class="img-circle"> <?php } ?></td>
                                     <td><a href="javascript:void(0);" data-toggle="modal" class="edit_data" data-target="#addModal" id="<?=$row['product_id'];?>"><i class="fa fa-pencil-square-o"></i></a> 
 									&nbsp; <a href="javascript:void(0);" class="del_data" onclick="return confirm('Are you sure you want to delete?')" id="<?=$row['product_id'];?>"><i class="fa fa-trash"></i></a></td>
                                 </tr>
@@ -143,8 +155,11 @@ $db->getSessionStatus();
            event.preventDefault();  
             $.ajax({  
                      url:"insert_product.php",  
-                     method:"POST",  
-                     data:$('#insert_form').serialize(),  
+                     type: "POST",             // Type of request to be send, called as method
+					 data: new FormData(this), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
+					 contentType: false,       // The content type used when sending data to the server.
+					 cache: false,             // To unable request pages to be cached
+					 processData:false,        // To send DOMDocument or non processed data file it is set to false  
                      beforeSend:function(){  
                           $('#insert').html("<i class='fa fa-save'></i> Processing..");  
                      },  

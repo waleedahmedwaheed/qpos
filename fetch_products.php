@@ -17,7 +17,10 @@ else
 	echo "<td>".$row['product_name']."</td>";
 	echo "<td>".$db->get_title('category_details','category_name','cat_id',$row['cat_id'])."</td>";
 	echo "<td>".$row['o_price']."</td>";
-	echo "<td>".$row['price']."</td>";
+	echo "<td>".$row['price']."</td>"; 
+	echo "<td>" ?>
+	<?php if($row['image']<>''){ ?> <img src="uploads/<?=$row['image'];?>" alt="POS" class="img-circle" /> <?php } else { ?> <img src="http://via.placeholder.com/70x70" alt="POS" class="img-circle"> <?php }  
+	echo "</td>";
 	?>
 	<td> <a href="javascript:void(0)" data-toggle="modal" class="edit_data" data-target="#addModal" id="<?=$row['product_id'];?>"><i class="fa fa-pencil-square-o"></i></a> &nbsp; 
 	<a href="javascript:void(0)" class="del_data" onclick="return confirm('Are you sure you want to delete?')" id="<?=$row['product_id'];?>"><i class="fa fa-trash"></i></a></td>

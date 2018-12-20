@@ -307,6 +307,7 @@
 	
 	function getSessionStatus(){
 		session_start();
+		$_SESSION['products'] = array();
 		if (!isset($_SESSION['name'])) {
 			header('Location: login.php');
 		}

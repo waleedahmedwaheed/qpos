@@ -1,3 +1,5 @@
+<?php include('db.php'); 
+$db->getSessionStatus(); ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -15,7 +17,12 @@
 		{
 			color: white !important;
 		}*/
+		.img-circle{
+			    height: 70px !important;
+				width: 100% !important;
+		}
 	</style>
+	<script src="assets/js/jquery-1.10.2.js"></script>
 </head>
 <body>
     <div id="wrapper">
@@ -84,186 +91,81 @@
         <div class="container">
              <div class="row">
                 <!-- starter -->
+				<?php
+					if(!isset($_GET['cat_order'])){
+						$cat_order = 1;
+					} else {
+						$cat_order = $_GET['cat_order'];	
+					}
+					$i=0;
+					$next_cat = $cat_order+1;
+					
+					if(isset($_GET['pid'])){
+						if(isset($_GET['products'])){
+							$arr_values = explode("&", http_build_query(array('products' => $_GET['products'])));
+							foreach($arr_values as $key=>$value){
+								  $new_val = explode('=', $value);
+								  array_push($_SESSION['products'], $new_val[1]);
+							}
+						}
+						array_push($_SESSION['products'], $_GET['pid']);
+					}
+					$query = urldecode(http_build_query(array('products' => $_SESSION['products'])));
+
+					$s = mysqli_query($db->connection, "select * from products where isactive = 1 AND cat_id IN (select cat_id from category_details where cat_order = $cat_order and isactive = 1)");
+					if(mysqli_num_rows($s)==0){ ?>
+						<script>
+						$(document).ready(function (e) {
+						var query = '<?=$query;?>';
+						$.ajax({
+						url: "insert_order.php?query=&"+query, // Url to which the request is send
+						type: "POST",             // Type of request to be send, called as method
+						data: new FormData(this), // Data sent to server, a set of key/value pairs (i.e. form fields and values)
+						contentType: false,       // The content type used when sending data to the server.
+						cache: false,             // To unable request pages to be cached
+						processData:false,        // To send DOMDocument or non processed data file it is set to false
+						success: function(data)   // A function to be called if request succeeds
+						{
+							$("#response").html(data);
+						},
+						error: function (jqXHR, status, err) {
+							alert("Error : Connection to server failed");
+						}
+						});
+						});
+						</script>						
+					<?php }
+					while ($row = mysqli_fetch_array($s)) {
+							$i++; 
+				?>
                 <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 mb40">
                     <div class="menu-block">
-						
-                         <div class="menu-content">
-							
-                            <div class="row panel panel-primary">
-								<a href="sideorder.php">
+					     <div class="menu-content">
+					        <div class="row panel panel-primary">
+								<a href="order.php?pid=<?=$row['product_id'];?>&cat_order=<?=$next_cat;?>&<?=$query;?>">
                                 <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                                    <div class="dish-img"> <img src="http://via.placeholder.com/70x70" alt="" class="img-circle"> </div>
+                                    <div class="dish-img"> <?php if($row['image']<>''){ ?> <img src="uploads/<?=$row['image'];?>" alt="POS" class="img-circle" /> <?php } else { ?> <img src="http://via.placeholder.com/70x70" alt="POS" class="img-circle"> <?php } ?> </div>
                                 </div>
 								</a>
-								<a href="sideorder.php">
+								<a href="order.php?pid=<?=$row['product_id'];?>&cat_order=<?=$next_cat;?>&<?=$query;?>">
                                 <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
                                     <div class="dish-content">
-                                        <h5 class="dish-title"> Aloo and Dal ki Tikki </h5>
-                                        <span class="dish-meta">Onion  /  Tomato</span>
+                                        <h5 class="dish-title"> <?=$row['product_name'];?> </h5>
+                                        <span class="dish-meta"><?=$db->get_title('category_details','category_description','cat_id',$row['cat_id']);?></span>
                                         <div class="dish-price">
                                     </div>
                                     </div>
                                  </div>
 								 </a>
                             </div>
-							
-                        </div>
-						
-                        <div class="menu-content">
-                            <div class="row panel panel-primary">
-                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                                    <div class="dish-img"><a href="#"><img src="http://via.placeholder.com/70x70" alt="" class="img-circle"></a></div>
-                                </div>
-                                <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                                    <div class="dish-content">
-                                        <h5 class="dish-title"><a href="#">Cheese Balls</a></h5>
-                                        <span class="dish-meta">puffed corn  /  cheese-flavored  </span>
-                                        <div class="dish-price">
-                                    </div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        <div class="menu-content">
-                            <div class="row panel panel-primary">
-                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                                    <div class="dish-img"><a href="#"><img src="http://via.placeholder.com/70x70" alt="" class="img-circle"></a></div>
-                                </div>
-                                <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                                    <div class="dish-content">
-                                        <h5 class="dish-title"><a href="#">Veg Crispy</a> </h5>
-                                        <span class="dish-meta">Ginger garlic /  Black pepper</span>
-                                        <div class="dish-price">
-                                    </div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.starter -->
-                <!-- Soup -->
-                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 mb40">
-                    <div class="menu-block">
-                         <div class="menu-content">
-                            <div class="row panel panel-primary">
-                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                                    <div class="dish-img"><a href="#"><img src="http://via.placeholder.com/70x70" alt="" class="img-circle"></a></div>
-                                </div>
-                                <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                                    <div class="dish-content">
-                                        <h5 class="dish-title"><a href="#">Minestrone</a></h5>
-                                        <span class="dish-meta"> beans  / onions celery / carrots</span>
-                                        <div class="dish-price">
-                                    </div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        <div class="menu-content">
-                            <div class="row panel panel-primary">
-                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                                    <div class="dish-img"><a href="#"><img src="http://via.placeholder.com/70x70" alt="" class="img-circle"></a></div>
-                                </div>
-                                <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                                    <div class="dish-content">
-                                        <h5 class="dish-title"><a href="#">Tomato soup</a></h5>
-                                        <span class="dish-meta">Cheesiy   / Creamy  /  Sweet</span>
-                                         <div class="dish-price">
-                                    </div>
-                                    </div>
-                                   
-                                </div>
-                            </div>
-                        </div>
-                        <div class="menu-content">
-                            <div class="row panel panel-primary">
-                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                                    <div class="dish-img"><a href="#"><img src="http://via.placeholder.com/70x70" alt="" class="img-circle"></a></div>
-                                </div>
-                                <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                                    <div class="dish-content">
-                                        <h5 class="dish-title"><a href="#">Cream of broccoli</a> </h5>
-                                        <span class="dish-meta"> broccoli /  milk  / cream </span>
-                                        <div class="dish-price">
-                                   </div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.soup -->
-                <!-- main course -->
-                <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 mb40">
-                    <div class="menu-block">
-                          <div class="menu-content">
-                            <div class="row panel panel-primary">
-                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                                    <div class="dish-img"><a href="#"><img src="http://via.placeholder.com/70x70" alt="" class="img-circle"></a></div>
-                                </div>
-                                <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                                    <div class="dish-content">
-                                        <h5 class="dish-title"><a href="#">Biryani</a></h5>
-                                        <span class="dish-meta"> Onion  /  Tomato</span>
-                                        <div class="dish-price">
-                                     </div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        <div class="menu-content">
-                            <div class="row panel panel-primary">
-                                <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                                    <div class="dish-img"><a href="#"><img src="http://via.placeholder.com/70x70" alt="" class="img-circle"></a></div>
-                                </div>
-                                <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                                    <div class="dish-content">
-                                        <h5 class="dish-title"><a href="#">Paneer Butter Masala</a></h5>
-                                        <span class="dish-meta">Aloo Masala  /  Aloo Palak 
-								</span>
-								<div class="dish-price">
-                                     </div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                        <div class="menu-content">
-                            <div class="row panel panel-primary">
-							
-						<div class="col-lg-3 col-md-3 col-sm-3 col-xs-12">
-                                    <div class="dish-img"><a href="#"><img src="http://via.placeholder.com/70x70" alt="" class="img-circle"></a></div>
-                                </div>
-                                <div class="col-lg-9 col-md-9 col-sm-9 col-xs-12">
-                                    <div class="dish-content">
-                                        <h5 class="dish-title"><a href="#">Chole Bhature</a> </h5>
-                                        <span class="dish-meta"> Rice Soft Idli  /  Ragi idli  /  Oats Idli </span>
-                                        <div class="dish-price">
-                                      </div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /.main Course -->
-                
-            </div> 
-			<div class="row" style="display:none;">
-				<div class="col-md-10">
+					    </div>
+					</div>
 				</div>
-                <div class="col-md-2">
-					<a href="sideorder.php" class="btn btn-success btn-block"> Proceed <i class="fa fa-arrow-right"></i>  </a>
-				 </div>
-			 </div>
-			 
+				<?php } ?>
+                <!-- /.starter -->
+                
+            </div>  
+			<span id="response"></span>
            </div>
     </div>
 			
