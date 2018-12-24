@@ -13,6 +13,29 @@ $db->getSessionStatus(); ?>
 			text-align:right;
 		}
 	 </style>
+	 <script type="text/javascript">
+var okToPrint=false;
+function isIE()
+{
+return (navigator.appName.toUpperCase() == 'MICROSOFT INTERNET EXPLORER');
+}
+function doPrint()
+{ window.printFrame.location.href="order_print.php?order_id=<?=$_GET['order_id'];?>";
+okToPrint=true;
+}
+function printIt()
+{if (okToPrint)
+{ if ( isIE() )
+{ document.printFrame.focus();
+document.printFrame.print();
+}
+else
+{ window.frames['printFrame'].focus();
+window.frames['printFrame'].print();
+}
+}
+}
+</script>
 </head>
 <body>
     <div id="wrapper">
@@ -31,6 +54,7 @@ $db->getSessionStatus(); ?>
         <div class="container">
                <div class="row">
          <div class="col-lg-12 col-md-12 col-sm-12">
+		 <button class="pull-right" onclick="doPrint(); blur(this);"><img src="assets/img/print.png" title="Print" width='25'></button>
            <div class="table-responsive">
                                 <table class="table table-striped table-bordered table-hover">
                             <thead>
@@ -120,6 +144,7 @@ $db->getSessionStatus(); ?>
 
 	<?php include('footer.php'); ?>
  
+<iframe width="0" height="0" name ="printFrame" id="printFrame" onload="printIt()"></iframe>
 
 <script>
 $(document).ready(function (e) {
@@ -147,6 +172,7 @@ $("#response").html(data);
 		 $("#userForm").hide();
 		 $('#cust_info').show(); 
 		 $('#cust_info').load(url + ' #cust_info'); 
+		 doPrint(); blur(this);
 	}
 	setTimeout(function(){	
 		$("#response").hide();	
@@ -159,6 +185,8 @@ error: function (jqXHR, status, err) {
 }));
 });
 </script> 
+
+
 
 
 </body>
